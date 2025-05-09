@@ -1,0 +1,473 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: TFG_API_Documentation
+  description: >-
+    Endpoints for authentication, disease management, symptoms, precautions, and
+    diagnoses.
+servers:
+  - description: Local development server
+    url: http://localhost:8080
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    LoginDTO:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+
+    SignupDTO:
+      type: object
+      required: [username, email, password]
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+
+    UserInfoDTO:
+      type: object
+      required: [username, role, patientId]
+      properties:
+        username:
+          type: string
+        role:
+          type: string
+        patientId:
+          type: integer
+
+    DiseaseCreateDTO:
+      type: object
+      required: [name, description]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+
+    Disease:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+
+    Symptom:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        severity:
+          type: integer
+
+    Precaution:
+      type: object
+      properties:
+        id:
+          type: integer
+        precautionText:
+          type: string
+
+    DiagnosisResultDTO:
+      type: object
+      required: [diseaseId, confidence]
+      properties:
+        diseaseId:
+          type: integer
+        confidence:
+          type: number
+
+    Diagnosis:
+      type: object
+      properties:
+        id:
+          type: integer
+        patientId:
+          type: integer
+        diseaseId:
+          type: integer
+        date:
+          type: string
+          format: date-time
+
+  parameters:
+    idParam:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+
+paths:
+
+  /auth/login:
+    post:
+      tags: [Authentication]
+      summary: User login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginDTO'
+      responses:
+        '200':
+          description: JWT token returned
+          content:
+            application/json:
+              schema:
+                type: string
+        '401':
+          description: Invalid credentials
+
+  /auth/signup:
+    post:
+      tags: [Authentication]
+      summary: Patient signup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignupDTO'
+      responses:
+        '200':
+          description: Patient successfully signed up
+        '400':
+          description: Bad request or user already exists
+        '500':
+          description: Internal server error
+
+  /auth/userinfo:
+    get:
+      tags: [Authentication]
+      summary: Get authenticated user info
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfoDTO'
+
+  /diseases:
+    post:
+      tags: [Diseases]
+      summary: Create a new disease (ADMIN only)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DiseaseCreateDTO'
+      responses:
+        '200':
+          description: Disease created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Disease'
+
+    get:
+      tags: [Diseases]
+      summary: List all diseases
+      responses:
+        '200':
+          description: Array of diseases
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Disease'
+
+  /diseases/{id}:
+    get:
+      tags: [Diseases]
+      summary: Get disease by ID
+      parameters:
+        - $ref: '#/components/parameters/idParam'
+      responses:
+        '200':
+          description: Disease found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Disease'
+        '404':
+          description: Not found
+
+    put:
+      tags: [Diseases]
+      summary: Update disease (ADMIN only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/idParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Disease'
+      responses:
+        '200':
+          description: Disease updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Disease'
+        '404':
+          description: Not found
+
+    delete:
+      tags: [Diseases]
+      summary: Delete disease (ADMIN only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/idParam'
+      responses:
+        '204':
+          description: Disease deleted
+
+  /diseases/{id}/extended:
+    get:
+      tags: [Diseases]
+      summary: Get disease with symptoms & precautions
+      parameters:
+        - $ref: '#/components/parameters/idParam'
+      responses:
+        '200':
+          description: Detailed disease object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Disease'
+
+  /symptoms:
+    post:
+      tags: [Symptoms]
+      summary: Create a new symptom (ADMIN only)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Symptom'
+      responses:
+        '200':
+          description: Symptom created
+
+    get:
+      tags: [Symptoms]
+      summary: List all symptoms
+      responses:
+        '200':
+          description: Array of symptoms
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Symptom'
+
+  /symptoms/{id}:
+    get:
+      tags: [Symptoms]
+      summary: Get symptom by ID
+      parameters:
+        - $ref: '#/components/parameters/idParam'
+      responses:
+        '200':
+          description: Symptom found
+
+    put:
+      tags: [Symptoms]
+      summary: Update symptom (ADMIN only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/idParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Symptom'
+      responses:
+        '200':
+          description: Symptom updated
+        '404':
+          description: Not found
+
+    delete:
+      tags: [Symptoms]
+      summary: Delete symptom (ADMIN only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/idParam'
+      responses:
+        '204':
+          description: Symptom deleted
+
+  /precautions:
+    post:
+      tags: [Precautions]
+      summary: Create a new precaution (ADMIN only)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Precaution'
+      responses:
+        '200':
+          description: Precaution created
+
+    get:
+      tags: [Precautions]
+      summary: List all precautions
+      responses:
+        '200':
+          description: Array of precautions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Precaution'
+
+  /precautions/{id}:
+    get:
+      tags: [Precautions]
+      summary: Get precaution by ID
+      parameters:
+        - $ref: '#/components/parameters/idParam'
+      responses:
+        '200':
+          description: Precaution found
+
+    put:
+      tags: [Precautions]
+      summary: Update precaution (ADMIN only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/idParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Precaution'
+      responses:
+        '200':
+          description: Precaution updated
+        '404':
+          description: Not found
+
+    delete:
+      tags: [Precautions]
+      summary: Delete precaution (ADMIN only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/idParam'
+      responses:
+        '204':
+          description: Precaution deleted
+
+  /diagnoses:
+    post:
+      tags: [Diagnoses]
+      summary: Diagnose by symptom IDs
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                symptomIds:
+                  type: array
+                  items:
+                    type: integer
+      responses:
+        '200':
+          description: Diagnosis results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DiagnosisResultDTO'
+        '400':
+          description: No matching disease found
+
+  /diagnoses/save:
+    post:
+      tags: [Diagnoses]
+      summary: Save patient diagnosis
+      parameters:
+        - name: patientId
+          in: query
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DiagnosisResultDTO'
+      responses:
+        '200':
+          description: Save successful
+        '500':
+          description: Internal server error
+
+  /patients/{id}/diagnoses:
+    get:
+      tags: [Patients]
+      summary: Get patient diagnoses (self or ADMIN)
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/idParam'
+      responses:
+        '200':
+          description: Array of diagnoses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Diagnosis'
+        '403':
+          description: Forbidden
