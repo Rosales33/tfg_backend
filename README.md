@@ -1,71 +1,71 @@
-# tfg_backend
+**# tfg_backend
 
-Este backend forma parte del proyecto de plataforma de telemedicina. Ha sido desarrollado con Spring Boot y utiliza una base de datos MySQL. A continuación, se detallan los pasos necesarios para levantar el backend en local.
+This backend is part of a telemedicine platform project. It has been developed using Spring Boot and uses a MySQL database. Below are the necessary steps to set up the backend locally.
 
-## Requisitos previos
+## Pre-requisites
 Java 17+
 
 Maven
 
-MySQL Server (8.0+ recomendado)
+MySQL Server (8.0+ recommended)
 
-Postman (opcional, para pruebas de endpoints)
+Postman (optional, for testing endpoints)
 
-## Configuración de la BBDD
+## DataBase Setup
 
-Crear la base de datos en MySQL
+1. Create the Database in MySQL
+   Before starting the application, the database must be created manually, as Spring Boot does not create it automatically.
 
-Antes de iniciar la aplicación, es necesario crear la base de datos manualmente, ya que Spring Boot no la crea automáticamente.
-
-Abre MySQL Workbench, línea de comandos o cualquier cliente MySQL y ejecuta:
+Open MySQL Workbench, terminal, or any MySQL client and run:
 
 ```sql
 CREATE DATABASE IF NOT EXISTS tfgBBDD;
 USE tfgBBDD;
 ```
 
-Ejecutar el script completo de estructura e inserción de datos
+2. Execute the Full Setup Script
 
-Dentro del proyecto, en la carpeta sql, encontrarás el archivo:
+Inside the project, in the sql folder, you'll find the file:
 ```plaintext
 sql/tfgBBDD_full_setup.sql
 ```
-Este archivo contiene todas las sentencias necesarias:
+This file contains all necessary SQL statements:
 
-CREATE TABLE para cada entidad del sistema
+CREATE TABLE statements for each system entity
 
-INSERT INTO para poblar las tablas con datos iniciales
+INSERT INTO statements to populate tables with initial data
 
-Simplemente copia y ejecuta todo el script dentro de la base de datos tfgBBDD ya creada.
+Simply copy and run the entire script within the previously created tfgBBDD database.
 
-## Configuración del application.properties
+## Configuring application.properties
 
-Ubicación:
+Location:
 ```plaintext
 src/main/resources/application.properties
 ```
-Este archivo conecta Spring Boot con tu base de datos. Asegúrate de ajustar:
-
+This file connects Spring Boot to your MySQL database. Make sure to update the following:
+```properties
 spring.datasource.url=jdbc:mysql://localhost:3306/tfgBBDD?useSSL=false
 spring.datasource.username=TU_USUARIO
 spring.datasource.password=TU_CONTRASEÑA
-Reemplaza TU_USUARIO y TU_CONTRASEÑA con tus credenciales locales de MySQL.
+```
+Replace YOUR_USERNAME and YOUR_PASSWORD with your local MySQL credentials.
 
-## Como iniciar el backend
-Abre el proyecto en IntelliJ o tu IDE favorito.
+## How to Start the Backend
+1. Open the project in IntelliJ or your preferred IDE.
 
-Asegúrate de que la base de datos esté creada y poblada correctamente.
+2. Ensure the database is created and populated correctly.
 
-Ejecuta la clase principal con @SpringBootApplication.
+3. Run the main class annotated with @SpringBootApplication.
 
-El servidor debería levantarse en http://localhost:8080.
+4. The server should start at http://localhost:8080.
 
 ## Documentación Swagger
 
-Una vez la aplicación esté en funcionamiento, los desarrolladores pueden acceder a la interfaz interactiva de Swagger UI para explorar y probar los endpoints disponibles accediendo a:
-
+Once the application is running, developers can access the interactive Swagger UI to explore and test available endpoints by navigating to:
 http://localhost:8080/docs/swagger-ui/index.html?url=/assets/swagger.yaml
 
-Esta documentación permite realizar llamadas a los endpoints directamente desde el navegador y facilita el entendimiento de las rutas disponibles, sus métodos y los datos que requieren o devuelven.
+This documentation allows you to make requests directly from the browser and helps you understand the available routes, their methods, and the expected inputs and outputs.
+
 
 
