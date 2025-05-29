@@ -60,4 +60,12 @@ Ejecuta la clase principal con @SpringBootApplication.
 
 El servidor debería levantarse en http://localhost:8080.
 
+## Documentación Swagger
+
+Una vez la aplicación esté en funcionamiento, los desarrolladores pueden acceder a la interfaz interactiva de Swagger UI para explorar y probar los endpoints disponibles accediendo a:
+
+http://localhost:8080/docs/swagger-ui/index.html?url=/assets/swagger.yaml
+
+Esta documentación permite realizar llamadas a los endpoints directamente desde el navegador y facilita el entendimiento de las rutas disponibles, sus métodos y los datos que requieren o devuelven.
+
 
