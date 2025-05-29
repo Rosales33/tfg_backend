@@ -1,4 +1,4 @@
-**# tfg_backend
+# tfg_backend
 
 This backend is part of a telemedicine platform project. It has been developed using Spring Boot and uses a MySQL database. Below are the necessary steps to set up the backend locally.
 
