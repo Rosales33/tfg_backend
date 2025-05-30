@@ -67,5 +67,12 @@ http://localhost:8080/docs/swagger-ui/index.html?url=/assets/swagger.yaml
 
 This documentation allows you to make requests directly from the browser and helps you understand the available routes, their methods, and the expected inputs and outputs.
 
+## Admin Access for Testing
+To test administrator functionalities, you can log in using the following credentials:
 
+```plaintext
+Username: admin
+Password: testpassword
+```
+These credentials correspond to a user with admin privileges and allow full access to protected endpoints in the system.
 

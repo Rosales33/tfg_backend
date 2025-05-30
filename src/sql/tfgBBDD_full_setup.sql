@@ -77,6 +77,9 @@ CREATE TABLE diagnosis (
    FOREIGN KEY (disease_id) REFERENCES disease(disease_id) ON DELETE CASCADE
 );
 
+INSERT INTO user (username, password, role_id) VALUES ('admin', '$2a$10$Cs8BdIeV4JV.vR81rbfyXevLuWiBHl/9xxgW13v9zCvLzzx1droOO', 2);
+
+INSERT INTO patient (username, email) VALUES ('admin', 'admin@gmail.com');
 
 INSERT INTO disease (name, description) VALUES ('Drug Reaction', 'An adverse drug reaction (ADR) is an injury caused by taking medication. ADRs may occur following a single dose or prolonged administration of a drug or result from the combination of two or more drugs.');
 INSERT INTO disease (name, description) VALUES ('Malaria', 'An infectious disease caused by protozoan parasites from the Plasmodium family that can be transmitted by the bite of the Anopheles mosquito or by a contaminated needle or transfusion. Falciparum malaria is the most deadly type.');
